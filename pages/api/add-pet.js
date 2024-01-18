@@ -2,8 +2,8 @@ import { sql } from '@vercel/postgres';
  
 export default async function handler(request, response) {
   try {
-    const petName = 'Ryan';
-    const ownerName = 'Bagus';
+    const petName = request.query.petName;
+    const ownerName = request.query.ownerName;
     if (!petName || !ownerName) throw new Error('Pet and owner names required');
     await sql`INSERT INTO Pets (Name, Owner) VALUES (${petName}, ${ownerName});`;
   } catch (error) {
