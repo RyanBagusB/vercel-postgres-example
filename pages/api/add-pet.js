@@ -3,43 +3,46 @@ import { sql } from '@vercel/postgres';
 export default async function handler(req, res) {
   try {
     if (req.method === 'POST') {
-      const { petName, ownerName } = req.body;
-      if (!petName || !ownerName) {
-        return res.status(400).json({ error: 'Pet and owner names are required' });
+      const { Name, Prize } = req.body;
+      if (!Name || !Prize) {
+        return res.status(400).json({ error: 'Name and Prize are required' });
       }
 
-      await sql`INSERT INTO Pets (Name, Owner) VALUES (${petName}, ${ownerName});`;
-      return res.status(201).json({ message: 'Pet created successfully' });
+      await sql`INSERT INTO books (Name, Prize) VALUES (${Name}, ${Prize});`;
+      return res.status(201).json({ message: 'Book created successfully' });
     }
 
     if (req.method === 'GET') {
-      const pets = await sql`SELECT * FROM Pets;`;
-      return res.status(200).json({ pets });
+      const books = await sql`SELECT Book_id, Name, Prize FROM books;`;
+      return res.status(200).json({ books });
     }
 
     if (req.method === 'PUT') {
-      const { petId, petName, ownerName } = req.body;
-      if (!petId || !petName || !ownerName) {
-        return res.status(400).json({ error: 'Pet ID, name, and owner are required for update' });
+      const { Book_id, Name, Prize } = req.body;
+      if (!Book_id || !Name || !Prize) {
+        return res.status(400).json({ error: 'Book_id, Name, and Prize are required for update' });
       }
 
-      const updateResult = await sql`UPDATE Pets SET Name = ${petName}, Owner = ${ownerName} WHERE id = ${petId};`;
+      const updateResult = await sql`UPDATE books SET Name = ${Name}, Prize = ${Prize} WHERE Book_id = ${Book_id};`;
       if (updateResult.rowCount === 0) {
-        return res.status(404).json({ error: 'Pet not found for update' });
+        return res.status(404).json({ error: 'Book not found for update' });
       }
 
-      return res.status(200).json({ message: 'Pet updated successfully' });
+      return res.status(200).json({ message: 'Book updated successfully' });
     }
 
     if (req.method === 'DELETE') {
-      const { petName, ownerName } = req.body;
+      const { Book_id } = req.body;
+      if (!Book_id) {
+        return res.status(400).json({ error: 'Book_id is required for deletion' });
+      }
 
-      await sql`DELETE FROM Pets`;
-      // if (deleteResult.rowCount === 0) {
-      //   return res.status(404).json({ error: 'Pet not found for deletion' });
-      // }
+      const deleteResult = await sql`DELETE FROM books WHERE Book_id = ${Book_id};`;
+      if (deleteResult.rowCount === 0) {
+        return res.status(404).json({ error: 'Book not found for deletion' });
+      }
 
-      return res.status(200).json({ message: 'Pet deleted successfully' });
+      return res.status(200).json({ message: 'Book deleted successfully' });
     }
 
     return res.status(405).json({ error: 'Method Not Allowed' });
