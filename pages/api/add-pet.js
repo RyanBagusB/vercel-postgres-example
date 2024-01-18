@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     if (req.method === 'DELETE') {
       const { petName, ownerName } = req.body;
 
-      // const deleteResult = await sql`DELETE FROM Pets WHERE Name = ${petName};`;
+      await sql`DELETE FROM Pets WHERE Name`;
       // if (deleteResult.rowCount === 0) {
       //   return res.status(404).json({ error: 'Pet not found for deletion' });
       // }
