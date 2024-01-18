@@ -32,12 +32,12 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
-      const petId = 1;
+      const { petName } = req.body;
       if (!petId) {
         return res.status(400).json({ error: 'Pet ID is required for deletion' });
       }
 
-      const deleteResult = await sql`DELETE FROM Pets WHERE id = ${petId};`;
+      const deleteResult = await sql`DELETE FROM Pets WHERE name = ${petName};`;
       if (deleteResult.rowCount === 0) {
         return res.status(404).json({ error: 'Pet not found for deletion' });
       }
